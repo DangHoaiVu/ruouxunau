@@ -1,0 +1,55 @@
+<div class="app-shell">
+  @if (!adminMode()) {
+  <header class="site-header" [class.scrolled]="scrolled()">
+    <a class="brand" routerLink="/" aria-label="Về trang chủ">
+      <span class="brand-mark">BĐ</span>
+      <span><strong>Rượu Xứ Nẫu</strong><small>Tinh hoa miền đất võ</small></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Điều hướng chính">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Trang chủ</a>
+      <a routerLink="/san-pham" routerLinkActive="active">Sản phẩm</a>
+      <a routerLink="/cau-chuyen" routerLinkActive="active">Câu chuyện</a>
+      <a routerLink="/lien-he" routerLinkActive="active">Liên hệ</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" (click)="toggleSearch()" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+      <button class="icon-button" (click)="store.toggleTheme()" [attr.aria-label]="store.theme() === 'dark' ? 'Bật giao diện sáng' : 'Bật giao diện tối'">
+        @if (store.theme() === 'dark') { <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg> }
+        @else { <svg viewBox="0 0 24 24"><path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"></path></svg> }
+      </button>
+      <a class="icon-button" [routerLink]="store.isAuthenticated() ? '/tai-khoan' : '/dang-nhap'" aria-label="Tài khoản"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></a>
+      <a class="icon-button cart-button" routerLink="/gio-hang" aria-label="Giỏ hàng"><svg viewBox="0 0 24 24"><path d="M3 4h2l2 12h10l2-8H6"></path><circle cx="9" cy="20" r="1"></circle><circle cx="17" cy="20" r="1"></circle></svg>@if (store.cartCount() > 0) { <span class="cart-badge">{{ store.cartCount() }}</span> }</a>
+      <button class="icon-button mobile-menu-button" (click)="toggleMenu()" aria-label="Mở menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </header>
+
+  @if (searchOpen()) {
+    <div class="search-panel"><form (submit)="submitSearch($event)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input name="search" autocomplete="off" placeholder="Tìm tên rượu, nguyên liệu hoặc câu chuyện..." /><button type="button" (click)="toggleSearch()" aria-label="Đóng tìm kiếm">×</button></form></div>
+  }
+  @if (menuOpen()) {
+    <nav class="mobile-nav" aria-label="Điều hướng di động"><a routerLink="/" (click)="closeMenu()">Trang chủ</a><a routerLink="/san-pham" (click)="closeMenu()">Sản phẩm</a><a routerLink="/cau-chuyen" (click)="closeMenu()">Câu chuyện</a><a routerLink="/lien-he" (click)="closeMenu()">Liên hệ</a></nav>
+  }
+  }
+
+  @if (store.showcaseStatus() === 'error') {
+    <div class="api-status" role="alert">Không tải được dữ liệu từ máy chủ. <button type="button" (click)="store.loadShowcase()">Thử lại</button></div>
+  }
+  <main><router-outlet /></main>
+
+  @if (!adminMode()) {
+  <footer class="site-footer">
+    <div class="footer-main container">
+      <div class="footer-brand"><a class="brand brand-light" routerLink="/"><span class="brand-mark">BĐ</span><span><strong>Rượu Xứ Nẫu</strong><small>Tinh hoa miền đất võ</small></span></a><p>Gìn giữ hương vị rượu truyền thống Bình Định bằng nguyên liệu bản địa và kỹ nghệ thủ công qua nhiều thế hệ.</p><div class="socials"><button type="button" (click)="handleSocial('Facebook')" aria-label="Facebook">f</button><button type="button" (click)="handleSocial('TikTok')" aria-label="TikTok">♪</button><button type="button" (click)="handleSocial('YouTube')" aria-label="YouTube">▶</button><button type="button" (click)="handleSocial('Zalo')" aria-label="Zalo">Z</button></div></div>
+      <div><h3>Khám phá</h3><a routerLink="/san-pham">Tất cả sản phẩm</a><a routerLink="/cau-chuyen">Câu chuyện làng nghề</a><a routerLink="/lien-he">Liên hệ & đại lý</a><a routerLink="/chinh-sach">Chính sách mua hàng</a></div>
+      <div><h3>Hỗ trợ</h3><a href="tel:0905123456">0905 123 456</a><a href="mailto:hello@ruouxunau.vn">hello&#64;ruouxunau.vn</a><span>Thứ 2 – Chủ nhật<br />08:00 – 20:00</span><a href="https://maps.google.com/?q=Bình+Định" target="_blank" rel="noopener">Xem bản đồ Bình Định ↗</a></div>
+      <div class="newsletter"><h3>Nhận tin từ Xứ Nẫu</h3><p>Câu chuyện mới, sản phẩm theo mùa và ưu đãi riêng.</p><form (submit)="$event.preventDefault(); store.notify('Đã đăng ký nhận tin thành công')"><input type="email" placeholder="Email của bạn" required /><button>Đăng ký</button></form></div>
+    </div>
+    <div class="footer-bottom container"><span>© 2026 Rượu Xứ Nẫu. Nội dung và sản phẩm đang ở chế độ demo.</span><span>Chỉ dành cho người từ 18 tuổi. Đã uống rượu bia — không lái xe.</span></div>
+  </footer>
+
+  @if (!store.ageVerified()) {
+    <div class="age-gate" role="dialog" aria-modal="true" aria-labelledby="age-title"><div class="age-card"><span class="age-seal">18+</span><p class="eyebrow">Chào mừng đến Xứ Nẫu</p><h2 id="age-title">Bạn đã đủ 18 tuổi?</h2><p>Website giới thiệu và kinh doanh đồ uống có cồn. Vui lòng xác nhận độ tuổi trước khi tiếp tục.</p><button class="button button-primary" (click)="store.confirmAge()">Tôi đã đủ 18 tuổi</button><a href="https://www.google.com" class="text-link">Rời khỏi website</a><small>Thưởng thức có trách nhiệm.</small></div></div>
+  }
+  }
+  @if (store.toast()) { <div class="toast" role="status">{{ store.toast() }}</div> }
+</div>
